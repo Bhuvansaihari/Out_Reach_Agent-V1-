@@ -12,11 +12,12 @@ from webhook_receiver.database import (
     get_application_details, mark_email_sent, mark_sms_sent
 )
 from webhook_receiver.utils import (
-    format_single_requirement, format_phone_number, validate_phone_number, validate_webhook_payload
+    format_single_requirement, format_phone_number,
+    validate_phone_number, validate_webhook_payload,
+    extract_plain_description
 )
 from webhook_receiver.email_template import render_email_template, get_email_subject
 
-# --- Add Email/SMS helpers (use SendGrid/Twilio SDKs directly) ---
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from twilio.rest import Client as TwilioClient
@@ -76,16 +77,19 @@ async def process_notifications_for_application(cand_id: int, requirement_id: st
             notify_email = candidate.get("notify_email", True)
             notify_sms = candidate.get("notify_sms", False)
 
+            # Always use the extractor!
+            raw_description = requirement.get('requirement_description', '')
+            plain_desc = extract_plain_description(raw_description)
+            clean_description = re.sub(r'<[^>]+>', '', plain_desc)
+            clean_description = html.unescape(clean_description)
+            if len(clean_description) > 250:
+                clean_description = clean_description[:250].strip() + '...'
+
             first_name = candidate['candidate_first_name']
             match_score_int = int(requirement['similarity_score'] * 100)
             job_type = "Contract"
             if requirement.get('requirement_duration'):
                 job_type = f"Contract ({requirement['requirement_duration']})"
-            description = requirement.get('requirement_description', '')
-            clean_description = re.sub(r'<[^>]+>', '', description)
-            clean_description = html.unescape(clean_description)
-            if len(clean_description) > 250:
-                clean_description = clean_description[:250].strip() + '...'
 
             # EMAIL
             if notify_email and not email_sent:

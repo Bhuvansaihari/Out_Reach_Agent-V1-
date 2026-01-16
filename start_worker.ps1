@@ -35,15 +35,17 @@ if (-not $maxConcurrency) {
 $minConcurrency = [math]::Max(5, [math]::Floor($maxConcurrency / 4))
 
 Write-Host "📊 Worker Configuration:" -ForegroundColor Cyan
+Write-Host "   Pool Type: threads (Windows compatible)" -ForegroundColor White
 Write-Host "   Max Concurrency: $maxConcurrency tasks" -ForegroundColor White
 Write-Host "   Min Concurrency: $minConcurrency tasks" -ForegroundColor White
 Write-Host "   Autoscaling: Enabled" -ForegroundColor Green
 Write-Host ""
 
-# Start Celery worker with autoscaling
+# Start Celery worker with autoscaling using threads pool
 Write-Host "Starting Celery worker..." -ForegroundColor Cyan
-celery -A celery_app worker --loglevel=info --pool=solo --autoscale=$maxConcurrency,$minConcurrency
+celery -A celery_app worker --loglevel=info --pool=threads --autoscale=$maxConcurrency,$minConcurrency
 
-# Note: --pool=solo is used for Windows compatibility
+# Note: --pool=threads is used for Windows with true concurrency
+# --pool=solo only supports 1 task at a time (no concurrency)
 # For production on Linux, use: --pool=prefork
 # Autoscale format: --autoscale=MAX,MIN

@@ -30,6 +30,7 @@ celery_app.conf.update(
     task_acks_late=True,  # Acknowledge task after completion
     task_reject_on_worker_lost=True,
     broker_connection_retry_on_startup=True,
+    result_expires=7200,  # Task results expire after 2 hours
 )
 
 if __name__ == '__main__':

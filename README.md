@@ -109,7 +109,7 @@ Terminal 2 - Celery Worker:
 .\start_worker.ps1
 
 # Or manually
-celery -A celery_app worker --loglevel=info --pool=solo
+celery -A celery_app worker --loglevel=info --pool=threads --concurrency=20
 ```
 
 Terminal 3 - Flower Monitoring (Optional):

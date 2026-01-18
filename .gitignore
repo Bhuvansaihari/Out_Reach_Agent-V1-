@@ -1,3 +1,21 @@
+# Environment variables
 .env
+.env.local
+.env.*.local
+
+# Encryption keys (NEVER commit these!)
+encryption_key.txt
+*.key
+
+# Python
 __pycache__/
-.DS_Store
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/

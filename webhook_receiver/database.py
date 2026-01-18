@@ -3,16 +3,14 @@ Database connection and helper functions for webhook receiver
 Updated for production schema: auto_apply_cand, parsed_requirements, job_application_tracking
 Schema version: November 2025 (min_payrate/max_payrate, duration as TEXT)
 """
-from supabase import create_client, Client
 import os
-from dotenv import load_dotenv
+from supabase import create_client, Client
+from config import get_supabase_url, get_supabase_key
 from typing import Dict, Optional
 
-load_dotenv()
-
-# Initialize Supabase client
-supabase_url = os.getenv("SUPABASE_URL")
-supabase_key = os.getenv("SUPABASE_KEY")
+# Initialize Supabase client with auto-decrypted credentials
+supabase_url = get_supabase_url()
+supabase_key = get_supabase_key()
 
 if not supabase_url or not supabase_key:
     raise ValueError("❌ SUPABASE_URL and SUPABASE_KEY must be set in .env file")

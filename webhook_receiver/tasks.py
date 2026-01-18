@@ -180,8 +180,11 @@ def send_email_task(self, application_id, candidate_email, first_name, job_title
         )
 
         # Send via SendGrid
-        api_key = os.getenv("SENDGRID_API_KEY")
-        from_email = os.getenv("SENDGRID_FROM_EMAIL")
+        # Get credentials with auto-decryption
+        from config import get_sendgrid_api_key, get_sendgrid_from_email
+        
+        api_key = get_sendgrid_api_key()
+        from_email = get_sendgrid_from_email()
         sg = SendGridAPIClient(api_key)
         message = Mail(
             from_email=from_email,
@@ -222,9 +225,12 @@ def send_sms_task(self, application_id, phone_number, message):
     Send SMS notification via Twilio
     """
     try:
-        account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-        auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-        from_phone = os.getenv("TWILIO_PHONE_NUMBER")
+        # Get credentials with auto-decryption
+        from config import get_twilio_account_sid, get_twilio_auth_token, get_twilio_phone_number
+        
+        account_sid = get_twilio_account_sid()
+        auth_token = get_twilio_auth_token()
+        from_phone = get_twilio_phone_number()
         
         client = TwilioClient(account_sid, auth_token)
         twilio_message = client.messages.create(

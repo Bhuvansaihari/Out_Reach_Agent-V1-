@@ -10,6 +10,9 @@ from webhook_receiver.utils import validate_webhook_payload
 # Import Celery tasks
 from webhook_receiver.tasks import send_notification_task
 
+# Import config for auto-decryption
+from config import get_webhook_secret
+
 load_dotenv()
 
 app = FastAPI(
@@ -18,7 +21,7 @@ app = FastAPI(
     version="7.0"
 )
 
-WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET")
+WEBHOOK_SECRET = get_webhook_secret()
 
 
 class WebhookPayload(BaseModel):

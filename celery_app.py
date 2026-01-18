@@ -2,16 +2,13 @@
 Celery application configuration for Out_Reach_Agent notification system
 """
 from celery import Celery
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from config import get_celery_broker_url, get_celery_result_backend
 
 # Initialize Celery app
 celery_app = Celery(
     'webhook_receiver',
-    broker=os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0'),
-    backend=os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0'),
+    broker=get_celery_broker_url(),
+    backend=get_celery_result_backend(),
     include=['webhook_receiver.tasks']
 )
 
